@@ -2,8 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الأدمن - B Gmail</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>لوحة التحكم الشاملة - Genezis Gmail Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -12,11 +15,11 @@
         }
 
         body {
-            font-family: 'Cairo', 'Tahoma', system-ui, -apple-system, sans-serif;
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
             padding: 20px;
             direction: rtl;
-            min-height: 100vh;
         }
 
         .admin-container {
@@ -24,7 +27,7 @@
             margin: 0 auto;
         }
 
-        /* Header */
+        /* الهيدر */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -32,11 +35,11 @@
             flex-wrap: wrap;
             gap: 16px;
             margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(12px);
             padding: 20px 28px;
-            border-radius: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .admin-header h1 {
@@ -47,20 +50,20 @@
             gap: 12px;
         }
 
-        .admin-header h1::before {
-            content: "👑";
-            font-size: 32px;
+        .admin-header h1 i {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 10px;
+            border-radius: 20px;
         }
 
         .refresh-all {
             background: linear-gradient(135deg, #1a73e8, #0d5bba);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-radius: 40px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
             transition: all 0.2s;
             display: flex;
             align-items: center;
@@ -69,10 +72,10 @@
 
         .refresh-all:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(26, 115, 232, 0.3);
+            box-shadow: 0 8px 20px rgba(26,115,232,0.3);
         }
 
-        /* Stats Cards */
+        /* إحصائيات */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -81,18 +84,18 @@
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
             border-radius: 28px;
             padding: 20px;
             text-align: center;
             transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .stat-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2);
         }
 
         .stat-icon {
@@ -112,7 +115,7 @@
             margin-top: 4px;
         }
 
-        /* Tabs */
+        /* التبويبات */
         .tabs {
             display: flex;
             gap: 12px;
@@ -121,7 +124,7 @@
         }
 
         .tab-btn {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255,255,255,0.12);
             backdrop-filter: blur(8px);
             border: none;
             padding: 12px 28px;
@@ -138,20 +141,20 @@
 
         .tab-btn.active {
             background: linear-gradient(135deg, #1a73e8, #0d5bba);
-            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+            box-shadow: 0 4px 12px rgba(26,115,232,0.3);
         }
 
         .tab-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255,255,255,0.25);
         }
 
-        /* Cards */
+        /* البطاقات */
         .card {
             background: white;
             border-radius: 32px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .card-header {
@@ -189,7 +192,80 @@
             transform: scale(1.02);
         }
 
-        /* Tables */
+        /* لوحة تحكم الرصيد */
+        .balance-control-panel {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .balance-control-panel .form-group {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .balance-control-panel label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        .balance-control-panel input, .balance-control-panel select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 28px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* الجداول */
         .table-wrapper {
             overflow-x: auto;
             border-radius: 20px;
@@ -224,13 +300,13 @@
             background: #eef2ff;
         }
 
-        /* Status Badges */
+        /* حالة الطلبات */
         .status-badge {
             display: inline-block;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
         }
 
         .status-pending {
@@ -253,95 +329,7 @@
             color: white;
         }
 
-        /* Buttons */
-        .btn-approve {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            margin: 2px;
-        }
-
-        .btn-reject {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            margin: 2px;
-        }
-
-        .btn-block {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            margin: 2px;
-        }
-
-        .btn-unblock {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* Admin Controls */
-        .admin-controls {
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 24px;
-            margin-bottom: 24px;
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
-
-        .admin-controls .form-group {
-            flex: 1;
-            min-width: 160px;
-        }
-
-        .admin-controls label {
-            display: block;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 6px;
-            color: #333;
-        }
-
-        .admin-controls input,
-        .admin-controls select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #ddd;
-            border-radius: 24px;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background: #1a73e8;
-            color: white;
-            padding: 10px 24px;
-            border: none;
-            border-radius: 28px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* Images */
+        /* الصور */
         .gmail-image {
             width: 45px;
             height: 45px;
@@ -357,7 +345,7 @@
             border-color: #1a73e8;
         }
 
-        /* Modal */
+        /* نافذة عرض الصورة */
         .image-modal {
             display: none;
             position: fixed;
@@ -365,7 +353,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0,0,0,0.95);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -387,7 +375,7 @@
             border-radius: 12px;
         }
 
-        .close-modal {
+        .close-modal-img {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -400,17 +388,14 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 20px;
         }
 
-        /* Loading */
         .loading {
             text-align: center;
             padding: 40px;
             color: #666;
         }
 
-        /* Tab content */
         .tab-content {
             display: none;
         }
@@ -419,14 +404,12 @@
             display: block;
         }
 
-        /* No data */
         .no-data {
             text-align: center;
             padding: 40px;
             color: #999;
         }
 
-        /* Status text */
         .status-active {
             color: #28a745;
             font-weight: bold;
@@ -436,17 +419,20 @@
             color: #dc3545;
             font-weight: bold;
         }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
 <div class="admin-container">
-    <!-- Header -->
     <div class="admin-header">
-        <h1>لوحة تحكم الأدمن</h1>
-        <button class="refresh-all" onclick="refreshAllData()">🔄 تحديث الكل</button>
+        <h1><i class="fas fa-crown"></i> لوحة التحكم الشاملة</h1>
+        <button class="refresh-all" onclick="refreshAllData()"><i class="fas fa-sync-alt"></i> تحديث الكل</button>
     </div>
 
-    <!-- Stats Cards -->
     <div class="stats-grid" id="statsContainer">
         <div class="stat-card">
             <div class="stat-icon">📧</div>
@@ -470,20 +456,19 @@
         </div>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('gmails')">📧 طلبات Gmail</button>
-        <button class="tab-btn" onclick="showTab('withdrawals')">💰 طلبات السحب</button>
-        <button class="tab-btn" onclick="showTab('users')">👥 إدارة المستخدمين</button>
-        <button class="tab-btn" onclick="showTab('balance')">💰 تعديل الرصيد</button>
+        <button class="tab-btn active" onclick="showTab('gmails')"><i class="fas fa-envelope"></i> طلبات Gmail</button>
+        <button class="tab-btn" onclick="showTab('withdrawals')"><i class="fas fa-money-bill"></i> طلبات السحب</button>
+        <button class="tab-btn" onclick="showTab('users')"><i class="fas fa-users"></i> إدارة المستخدمين</button>
+        <button class="tab-btn" onclick="showTab('balance')"><i class="fas fa-coins"></i> تعديل الرصيد</button>
     </div>
 
-    <!-- Gmails Tab -->
+    <!-- طلبات Gmail -->
     <div id="gmailsTab" class="tab-content active">
         <div class="card">
             <div class="card-header">
-                <h2>📧 طلبات إنشاء Gmail</h2>
-                <button class="btn-refresh" onclick="loadAllGmails()">🔄 تحديث</button>
+                <h2><i class="fas fa-envelope-open-text"></i> طلبات إنشاء Gmail</h2>
+                <button class="btn-refresh" onclick="loadAllGmails()"><i class="fas fa-sync-alt"></i> تحديث</button>
             </div>
             <div id="gmailsTable" class="table-wrapper">
                 <div class="loading">⏳ جاري التحميل...</div>
@@ -491,12 +476,12 @@
         </div>
     </div>
 
-    <!-- Withdrawals Tab -->
+    <!-- طلبات السحب -->
     <div id="withdrawalsTab" class="tab-content">
         <div class="card">
             <div class="card-header">
-                <h2>💰 طلبات السحب</h2>
-                <button class="btn-refresh" onclick="loadAllWithdrawals()">🔄 تحديث</button>
+                <h2><i class="fas fa-money-bill-wave"></i> طلبات السحب</h2>
+                <button class="btn-refresh" onclick="loadAllWithdrawals()"><i class="fas fa-sync-alt"></i> تحديث</button>
             </div>
             <div id="withdrawalsTable" class="table-wrapper">
                 <div class="loading">⏳ جاري التحميل...</div>
@@ -504,12 +489,12 @@
         </div>
     </div>
 
-    <!-- Users Tab -->
+    <!-- إدارة المستخدمين -->
     <div id="usersTab" class="tab-content">
         <div class="card">
             <div class="card-header">
-                <h2>👥 إدارة المستخدمين</h2>
-                <button class="btn-refresh" onclick="loadAllUsers()">🔄 تحديث</button>
+                <h2><i class="fas fa-user-cog"></i> إدارة المستخدمين</h2>
+                <button class="btn-refresh" onclick="loadAllUsers()"><i class="fas fa-sync-alt"></i> تحديث</button>
             </div>
             <div id="usersTable" class="table-wrapper">
                 <div class="loading">⏳ جاري التحميل...</div>
@@ -517,39 +502,39 @@
         </div>
     </div>
 
-    <!-- Balance Tab -->
+    <!-- تعديل الرصيد -->
     <div id="balanceTab" class="tab-content">
         <div class="card">
             <div class="card-header">
-                <h2>💰 تعديل الرصيد</h2>
+                <h2><i class="fas fa-coins"></i> تعديل رصيد المستخدم</h2>
             </div>
-            <div class="admin-controls">
+            <div class="balance-control-panel">
                 <div class="form-group">
-                    <label>📱 رقم الهاتف:</label>
+                    <label><i class="fas fa-phone"></i> رقم الهاتف</label>
                     <input type="tel" id="balancePhone" placeholder="مثال: 01012345678">
                 </div>
                 <div class="form-group">
-                    <label>💰 نوع الرصيد:</label>
+                    <label><i class="fas fa-chart-line"></i> نوع الرصيد</label>
                     <select id="balanceType">
                         <option value="current">الرصيد الحالي</option>
                         <option value="pending">الرصيد المتجمد</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>💵 المبلغ:</label>
+                    <label><i class="fas fa-dollar-sign"></i> المبلغ</label>
                     <input type="number" id="balanceAmount" placeholder="المبلغ">
                 </div>
                 <div class="form-group">
-                    <label>🔄 العملية:</label>
+                    <label><i class="fas fa-exchange-alt"></i> العملية</label>
                     <select id="balanceOperation">
                         <option value="add">➕ إضافة</option>
                         <option value="subtract">➖ خصم</option>
                         <option value="set">⚙️ تعيين</option>
                     </select>
                 </div>
-                <button class="btn-primary" onclick="modifyBalance()">تعديل الرصيد</button>
+                <button class="btn-primary" onclick="modifyBalance()"><i class="fas fa-save"></i> تعديل الرصيد</button>
             </div>
-            <button class="btn-refresh" onclick="loadAllUsers()">🔄 تحديث قائمة المستخدمين</button>
+            <button class="btn-refresh" onclick="loadAllUsers()"><i class="fas fa-sync-alt"></i> تحديث قائمة المستخدمين</button>
             <div id="usersBalanceTable" class="table-wrapper">
                 <div class="loading">⏳ اضغط على زر التحديث لعرض المستخدمين</div>
             </div>
@@ -557,16 +542,18 @@
     </div>
 </div>
 
-<!-- Image Modal -->
+<!-- نافذة عرض الصورة -->
 <div id="imageModal" class="image-modal" onclick="closeImageModal()">
     <div class="image-modal-content" onclick="event.stopPropagation()">
-        <span class="close-modal" onclick="closeImageModal()">&times;</span>
+        <span class="close-modal-img" onclick="closeImageModal()">&times;</span>
         <img id="modalImage" src="" alt="صورة الجميل">
     </div>
 </div>
 
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhqm0X3ZotU1CTxYyPDWgESbQPJuCvcs4MkGjgyPNXB4M7pUot_L1DsIk6bAF8lQHv/exec';
+    const TELEGRAM_BOT_TOKEN = '8683585634:AAEzjHOyOouQemsaT9HNlgq2W7d68uNO41k';
+    const TELEGRAM_CHAT_ID = '7526387894';
 
     let gmailsData = [];
     let withdrawalsData = [];
@@ -606,62 +593,90 @@
         document.getElementById('totalUsers').textContent = usersData.length || 0;
     }
 
+    async function getTelegramImageUrl(gmail) {
+        try {
+            // محاولة جلب الصورة من تليجرام بناءً على البريد
+            const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`);
+            const data = await response.json();
+            if (data.ok && data.result) {
+                for (const update of data.result) {
+                    if (update.message && update.message.photo && update.message.caption) {
+                        if (update.message.caption.includes(gmail)) {
+                            const photo = update.message.photo[update.message.photo.length - 1];
+                            const fileId = photo.file_id;
+                            const fileResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getFile?file_id=${fileId}`);
+                            const fileData = await fileResponse.json();
+                            if (fileData.ok) {
+                                return `https://api.telegram.org/file/bot${TELEGRAM_BOT_TOKEN}/${fileData.result.file_path}`;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Telegram fetch error:', e);
+        }
+        return '';
+    }
+
     async function loadAllGmails() {
         const container = document.getElementById('gmailsTable');
         container.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
-
+        
         const result = await callAPI('adminGetAllGmails');
-
+        
         if (result?.success && result.gmails) {
             gmailsData = result.gmails;
             if (gmailsData.length === 0) {
                 container.innerHTML = '<div class="no-data">📭 لا توجد طلبات إنشاء Gmail</div>';
                 return;
             }
-
+            
             let html = `<table>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>📷 الصورة</th>
-                        <th>📱 رقم الهاتف</th>
-                        <th>👤 الاسم</th>
-                        <th>📧 البريد</th>
-                        <th>🔑 كلمة المرور</th>
-                        <th>📅 التاريخ</th>
-                        <th>📌 الحالة</th>
-                        <th>⚡ إجراءات</th>
+                        <th>#</th><th>📷 الصورة</th><th>📱 رقم الهاتف</th><th>👤 الاسم</th><th>📧 البريد</th><th>🔑 كلمة المرور</th><th>📅 التاريخ</th><th>📌 الحالة</th><th>⚡ إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>`;
-
-            gmailsData.forEach((g, idx) => {
+            
+            for (let idx = 0; idx < gmailsData.length; idx++) {
+                const g = gmailsData[idx];
                 const statusClass = g.status === 'Pending' ? 'status-pending' : (g.status === 'Approved' ? 'status-approved' : 'status-rejected');
                 const statusText = g.status === 'Pending' ? '⏳ قيد المراجعة' : (g.status === 'Approved' ? '✅ مقبول' : '❌ مرفوض');
-
+                
                 let imgHtml = '📷 لا توجد';
+                let imageUrl = '';
+                
                 if (g.imageUrl && g.imageUrl.startsWith('http')) {
-                    imgHtml = `<img src="${g.imageUrl}" class="gmail-image" onclick="showImage('${g.imageUrl}')" onerror="this.style.display='none';this.nextSibling.style.display='inline'"><span style="display:none">خطأ</span>`;
+                    imageUrl = g.imageUrl;
+                    imgHtml = `<img src="${imageUrl}" class="gmail-image" onclick="showImage('${imageUrl}')" onerror="this.src='https://via.placeholder.com/50?text=خطأ'">`;
+                } else {
+                    const telegramUrl = await getTelegramImageUrl(g.gmail);
+                    if (telegramUrl) {
+                        imageUrl = telegramUrl;
+                        imgHtml = `<img src="${telegramUrl}" class="gmail-image" onclick="showImage('${telegramUrl}')" onerror="this.src='https://via.placeholder.com/50?text=خطأ'">`;
+                    }
                 }
-
+                
                 html += `<tr>
-                    <td>${idx + 1}</td>
-                    <td>${imgHtml}</td>
-                    <td>${g.phone}</td>
-                    <td>${g.fullName}</td>
-                    <td>${g.gmail}</td>
-                    <td>${g.password}</td>
-                    <td>${new Date(g.timestamp).toLocaleDateString('ar-EG')}</td>
-                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${idx + 1}${'</td>'}
+                    <td>${imgHtml}${'</td>'}
+                    <td>${g.phone}${'</td>'}
+                    <td>${g.fullName}${'</td>'}
+                    <td>${g.gmail}${'</td>'}
+                    <td>${g.password}${'</td>'}
+                    <td>${new Date(g.timestamp).toLocaleDateString('ar-EG')}${'</td>'}
+                    <td><span class="status-badge ${statusClass}">${statusText}</span>${'</td>'}
                     <td>
                         ${g.status === 'Pending' ? `
-                            <button class="btn-approve" onclick="approveGmail(${g.rowIndex})">✅ قبول</button>
-                            <button class="btn-reject" onclick="rejectGmail(${g.rowIndex}, false)">❌ رفض</button>
-                            <button class="btn-block" onclick="rejectGmail(${g.rowIndex}, true)">🚫 رفض وحظر</button>
+                            <button class="btn-success" onclick="approveGmail(${g.rowIndex})">✅ قبول</button>
+                            <button class="btn-danger" onclick="rejectGmail(${g.rowIndex}, false)">❌ رفض</button>
+                            <button class="btn-warning" onclick="rejectGmail(${g.rowIndex}, true)">🚫 رفض وحظر</button>
                         ` : ''}
-                    </td>
-                </tr>`;
-            });
+                    ${'</td>'}
+                 ${'</tr>'}`;
+            }
             html += `</tbody>点心`;
             container.innerHTML = html;
         } else {
@@ -673,53 +688,45 @@
     async function loadAllWithdrawals() {
         const container = document.getElementById('withdrawalsTable');
         container.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
-
+        
         const result = await callAPI('adminGetAllWithdrawals');
-
+        
         if (result?.success && result.withdrawals) {
             withdrawalsData = result.withdrawals;
             if (withdrawalsData.length === 0) {
                 container.innerHTML = '<div class="no-data">📭 لا توجد طلبات سحب</div>';
                 return;
             }
-
+            
             let html = `<table>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>📱 رقم الهاتف</th>
-                        <th>🏦 المحفظة</th>
-                        <th>💰 المبلغ</th>
-                        <th>💸 المصاريف</th>
-                        <th>✅ الصافي</th>
-                        <th>📅 التاريخ</th>
-                        <th>📌 الحالة</th>
-                        <th>⚡ إجراءات</th>
+                        <th>#</th><th>📱 رقم الهاتف</th><th>🏦 المحفظة</th><th>💰 المبلغ</th><th>💸 المصاريف</th><th>✅ الصافي</th><th>📅 التاريخ</th><th>📌 الحالة</th><th>⚡ إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>`;
-
+            
             withdrawalsData.forEach((w, idx) => {
                 const statusClass = w.status === 'Pending' ? 'status-pending' : (w.status === 'Completed' ? 'status-completed' : 'status-rejected');
                 const statusText = w.status === 'Pending' ? '⏳ قيد المراجعة' : (w.status === 'Completed' ? '✅ مكتمل' : '❌ مرفوض');
                 const netAmount = w.amount - (w.fee || 5);
-
+                
                 html += `<tr>
-                    <td>${idx + 1}</td>
-                    <td>${w.phone}</td>
-                    <td>${w.wallet}</td>
-                    <td>${w.amount} ج.م</td>
-                    <td>${w.fee || 5} ج.م</td>
-                    <td>${netAmount} ج.م</td>
-                    <td>${new Date(w.timestamp).toLocaleDateString('ar-EG')}</td>
-                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${idx + 1}${'</td>'}
+                    <td>${w.phone}${'</td>'}
+                    <td>${w.wallet}${'</td>'}
+                    <td>${w.amount} ج.م${'</td>'}
+                    <td>${w.fee || 5} ج.م${'</td>'}
+                    <td>${netAmount} ج.م${'</td>'}
+                    <td>${new Date(w.timestamp).toLocaleDateString('ar-EG')}${'</td>'}
+                    <td><span class="status-badge ${statusClass}">${statusText}</span>${'</td>'}
                     <td>
                         ${w.status === 'Pending' ? `
-                            <button class="btn-approve" onclick="approveWithdrawal(${w.rowIndex})">✅ قبول</button>
-                            <button class="btn-reject" onclick="rejectWithdrawal(${w.rowIndex})">❌ رفض</button>
+                            <button class="btn-success" onclick="approveWithdrawal(${w.rowIndex})">✅ قبول</button>
+                            <button class="btn-danger" onclick="rejectWithdrawal(${w.rowIndex})">❌ رفض</button>
                         ` : ''}
-                    </td>
-                </td>`;
+                    ${'</td>'}
+                 ${'</tr>'}`;
             });
             html += `</tbody>点心`;
             container.innerHTML = html;
@@ -734,9 +741,9 @@
         const balanceContainer = document.getElementById('usersBalanceTable');
         container.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
         balanceContainer.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
-
+        
         const result = await callAPI('adminGetAllUsers');
-
+        
         if (result?.success && result.users) {
             usersData = result.users;
             if (usersData.length === 0) {
@@ -744,61 +751,50 @@
                 balanceContainer.innerHTML = '<div class="no-data">📭 لا يوجد مستخدمين</div>';
                 return;
             }
-
+            
             let html = `<table>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>📱 رقم الهاتف</th>
-                        <th>👤 الاسم</th>
-                        <th>💰 الرصيد الحالي</th>
-                        <th>⏳ الرصيد المتجمد</th>
-                        <th>📌 الحالة</th>
-                        <th>⚡ إجراءات</th>
+                        <th>#</th><th>📱 رقم الهاتف</th><th>👤 الاسم</th><th>💰 الرصيد الحالي</th><th>⏳ الرصيد المتجمد</th><th>📌 الحالة</th><th>⚡ إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>`;
-
-            let balanceHtml = `<table>
+            
+            let balanceHtml = `</table>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>📱 رقم الهاتف</th>
-                        <th>👤 الاسم</th>
-                        <th>💰 الرصيد الحالي</th>
-                        <th>⏳ الرصيد المتجمد</th>
-                        <th>📌 الحالة</th>
+                        <th>#</th><th>📱 رقم الهاتف</th><th>👤 الاسم</th><th>💰 الرصيد الحالي</th><th>⏳ الرصيد المتجمد</th><th>📌 الحالة</th>
                     </tr>
                 </thead>
                 <tbody>`;
-
+            
             usersData.forEach((u, idx) => {
                 const statusText = u.blocked === "TRUE" ? '🔴 محظور' : '🟢 نشط';
                 const statusClass = u.blocked === "TRUE" ? 'status-blocked' : 'status-active';
-
+                
                 html += `<tr>
-                    <td>${idx + 1}</td>
-                    <td>${u.phone}</td>
-                    <td>${u.name}</td>
-                    <td>${u.balance} ج.م</td>
-                    <td>${u.pendingBalance} ج.م</td>
-                    <td class="${statusClass}">${statusText}</td>
+                    <td>${idx + 1}${'</td>'}
+                    <td>${u.phone}${'</td>'}
+                    <td>${u.name}${'</td>'}
+                    <td>${u.balance} ج.م${'</td>'}
+                    <td>${u.pendingBalance} ج.م${'</td>'}
+                    <td><span class="${statusClass}">${statusText}</span>${'</td>'}
                     <td>
-                        ${u.blocked === "TRUE" ?
-                            `<button class="btn-unblock" onclick="unblockUser('${u.phone}')">🔓 إلغاء الحظر</button>` :
-                            `<button class="btn-block" onclick="blockUser('${u.phone}')">🔒 حظر</button>`
+                        ${u.blocked === "TRUE" ? 
+                            `<button class="btn-success" onclick="unblockUser('${u.phone}')">🔓 إلغاء الحظر</button>` : 
+                            `<button class="btn-danger" onclick="blockUser('${u.phone}')">🔒 حظر</button>`
                         }
-                    </td>
-                </tr>`;
-
+                    ${'</td>'}
+                 ${'</tr>'}`;
+                
                 balanceHtml += `<tr>
-                    <td>${idx + 1}</td>
-                    <td>${u.phone}</td>
-                    <td>${u.name}</td>
-                    <td>${u.balance} ج.م</td>
-                    <td>${u.pendingBalance} ج.م</td>
-                    <td class="${statusClass}">${statusText}</td>
-                </tr>`;
+                    <td>${idx + 1}${'</td>'}
+                    <td>${u.phone}${'</td>'}
+                    <td>${u.name}${'</td>'}
+                    <td>${u.balance} ج.م${'</td>'}
+                    <td>${u.pendingBalance} ج.م${'</td>'}
+                    <td><span class="${statusClass}">${statusText}</span>${'</td>'}
+                 ${'</tr>'}`;
             });
             html += `</tbody>点心`;
             balanceHtml += `</tbody>点心`;
@@ -882,12 +878,12 @@
         const type = document.getElementById('balanceType').value;
         const amount = parseFloat(document.getElementById('balanceAmount').value);
         const operation = document.getElementById('balanceOperation').value;
-
+        
         if (!phone || isNaN(amount)) {
             alert('⚠️ أدخل رقم الهاتف والمبلغ');
             return;
         }
-
+        
         const result = await callAPI('adminModifyBalance', { phone, type, amount, operation });
         if (result?.success) {
             alert(`✅ تم التعديل\nالقديم: ${result.oldValue} ج.م\nالجديد: ${result.newValue} ج.م`);
