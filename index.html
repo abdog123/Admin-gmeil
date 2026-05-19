@@ -241,6 +241,66 @@
     direction: ltr;
     font-size: 11px;
 }
+        /* تنسيق جدول السحب مثل جدول الجميلات */
+#withdrawalsTab .table-wrapper {
+    overflow-x: auto;
+    border-radius: 20px;
+    max-height: 550px;
+    overflow-y: auto;
+}
+
+#withdrawalsTab table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 1000px;
+}
+
+#withdrawalsTab th,
+#withdrawalsTab td {
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 10px 8px;
+    text-align: center;
+    vertical-align: middle;
+    color: rgba(255,255,255,0.9);
+}
+
+#withdrawalsTab th {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    position: sticky;
+    top: 0;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+#withdrawalsTab td {
+    white-space: nowrap;
+}
+
+#withdrawalsTab tr:nth-child(even) {
+    background: rgba(255,255,255,0.03);
+}
+
+#withdrawalsTab tr:hover {
+    background: rgba(102,126,234,0.15);
+}
+
+/* تصغير الأزرار */
+#withdrawalsTab .btn-success,
+#withdrawalsTab .btn-danger,
+#withdrawalsTab .btn-delete {
+    padding: 5px 10px;
+    font-size: 11px;
+    border-radius: 20px;
+}
+
+/* عرض أرقام المحفظة */
+#withdrawalsTab .phone-cell {
+    direction: ltr;
+    font-family: monospace;
+    font-size: 12px;
+}
     </style>
 </head>
 <body>
@@ -664,49 +724,61 @@
     }
 
     function displayWithdrawals() {
-        const filtered = withdrawalsData.filter(w => !hiddenWithdrawalIds.has(w.uniqueId));
-        if (filtered.length === 0) {
-            document.getElementById('withdrawalsTable').innerHTML = '<div class="no-data">📭 لا توجد طلبات سحب</div>';
-            document.getElementById('withdrawalsSelectionBar').style.display = 'none';
-            return;
-        }
+    const filtered = withdrawalsData.filter(w => !hiddenWithdrawalIds.has(w.uniqueId));
+    if (filtered.length === 0) {
+        document.getElementById('withdrawalsTable').innerHTML = '<div class="no-data">📭 لا توجد طلبات سحب</div>';
+        document.getElementById('withdrawalsSelectionBar').style.display = 'none';
+        return;
+    }
+    
+    let html = `<table><thead><tr>
+        <th style="width: 40px;"><input type="checkbox" id="selectAllWithdrawals" onchange="toggleSelectAllWithdrawals()"></th>
+        <th>#</th>
+        <th>📱 رقم الهاتف</th>
+        <th>🏦 رقم المحفظة</th>
+        <th>💰 المبلغ المطلوب</th>
+        <th>💸 المصاريف</th>
+        <th>✅ الصافي المستلم</th>
+        <th>📌 الحالة</th>
+        <th>📅 التاريخ</th>
+        <th>⚡ الإجراءات</th>
+    </tr></thead><tbody>`;
+    
+    for (let i = 0; i < filtered.length; i++) {
+        const w = filtered[i];
+        const statusClass = w.status === 'Pending' ? 'status-pending' : (w.status === 'Completed' ? 'status-completed' : 'status-rejected');
+        const statusText = w.status === 'Pending' ? '⏳ قيد المراجعة' : (w.status === 'Completed' ? '✅ مكتمل' : '❌ مرفوض');
+        const netAmount = (w.amount - (w.fee || 5)).toFixed(2);
+        const originalIndex = withdrawalsData.findIndex(orig => orig.uniqueId === w.uniqueId);
+        const isChecked = selectedWithdrawals.has(w.uniqueId);
         
-        let html = `<tr><thead><tr>
-            <th style="width: 40px;"><input type="checkbox" id="selectAllWithdrawals" onchange="toggleSelectAllWithdrawals()"></th>
-            <th>#</th><th>📱 الهاتف</th><th>🏦 المحفظة</th><th>💰 المبلغ</th><th>💸 المصاريف</th><th>✅ الصافي</th><th>📅 التاريخ</th><th>📌 الحالة</th><th>⚡ إجراءات</th>
-        </tr></thead><tbody>`;
-        
-        for (let i = 0; i < filtered.length; i++) {
-            const w = filtered[i];
-            const statusClass = w.status === 'Pending' ? 'status-pending' : (w.status === 'Completed' ? 'status-completed' : 'status-rejected');
-            const statusText = w.status === 'Pending' ? '⏳ قيد المراجعة' : (w.status === 'Completed' ? '✅ مكتمل' : '❌ مرفوض');
-            const netAmount = w.amount - (w.fee || 5);
-            const originalIndex = withdrawalsData.findIndex(orig => orig.uniqueId === w.uniqueId);
-            const isChecked = selectedWithdrawals.has(w.uniqueId);
-            
-            html += `<tr>
-                <td><input type="checkbox" class="withdrawal-checkbox" data-id="${w.uniqueId}" ${isChecked ? 'checked' : ''} onchange="toggleWithdrawalSelection('${w.uniqueId}')"></td>
-                <td>${i+1}</td><td class="phone-cell">${w.phone}</td><td>${w.wallet}</td>
-                <td>${w.amount} ج.م</td><td>${w.fee || 5} ج.م</td><td>${netAmount} ج.م</td>
-                <td>${new Date(w.timestamp).toLocaleDateString('ar-EG')}</td>
-                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                <td>
-                    ${w.status === 'Pending' ? 
-                        `<button class="btn-success" onclick="approveWithdrawal(${originalIndex})">✅ قبول</button>
-                         <button class="btn-danger" onclick="rejectWithdrawal(${originalIndex})">❌ رفض</button>` : 
-                        `<button class="btn-delete" onclick="hideSingleWithdrawal('${w.uniqueId}')"><i class="fas fa-eye-slash"></i> إخفاء</button>`}
-                </td>
-            </tr>`;
-        }
-        document.getElementById('withdrawalsTable').innerHTML = html + '</tbody></table>';
-        
-        const selectionBar = document.getElementById('withdrawalsSelectionBar');
-        if (selectedWithdrawals.size > 0) {
-            selectionBar.style.display = 'flex';
-            document.getElementById('selectedWithdrawalsCount').textContent = selectedWithdrawals.size;
-        } else {
-            selectionBar.style.display = 'none';
-        }
+        html += `<tr>
+            <td><input type="checkbox" class="withdrawal-checkbox" data-id="${w.uniqueId}" ${isChecked ? 'checked' : ''} onchange="toggleWithdrawalSelection('${w.uniqueId}')"></td>
+            <td>${i+1}</td>
+            <td class="phone-cell">${w.phone}</td>
+            <td class="phone-cell">${w.wallet}</td>
+            <td>${w.amount} ج.م</td>
+            <td>${w.fee || 5} ج.م</td>
+            <td>${netAmount} ج.م</td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td>${new Date(w.timestamp).toLocaleDateString('ar-EG')}</td>
+            <td>
+                ${w.status === 'Pending' ? 
+                    `<button class="btn-success" onclick="approveWithdrawal(${originalIndex})" style="margin: 2px;">✅ قبول</button>
+                     <button class="btn-danger" onclick="rejectWithdrawal(${originalIndex})" style="margin: 2px;">❌ رفض</button>` : 
+                    `<button class="btn-delete" onclick="hideSingleWithdrawal('${w.uniqueId}')" style="margin: 2px;"><i class="fas fa-eye-slash"></i> إخفاء</button>`}
+             </td>
+        </tr>`;
+    }
+    document.getElementById('withdrawalsTable').innerHTML = html + '</tbody></table>';
+    
+    const selectionBar = document.getElementById('withdrawalsSelectionBar');
+    if (selectedWithdrawals.size > 0) {
+        selectionBar.style.display = 'flex';
+        document.getElementById('selectedWithdrawalsCount').textContent = selectedWithdrawals.size;
+    } else {
+        selectionBar.style.display = 'none';
+    }
     }
 
     function toggleSelectAllWithdrawals() {
